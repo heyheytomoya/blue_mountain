@@ -24,14 +24,20 @@ def get_channel_videos(channel_id, from_date):
         next_page_token = res.get('nextPageToken')
         if next_page_token is None:
             break
-    # 動画を再生数でソートします（再生数の多い順）
-    videos.sort(key=lambda x: int(x['snippet']['statistics']['viewCount']), reverse=True)
-    return [video for video in videos if
+    # 動画の詳細情報を取得して再生数でソートします（再生数の多い順）
+    video_details = []
+    for video in videos:
+        video_id = video['snippet']['resourceId']['videoId']
+        video_detail = youtube.videos().list(part='snippet,statistics', id=video_id).execute()
+        video_details.append(video_detail['items'][0])
+    
+    video_details.sort(key=lambda x: int(x['statistics']['viewCount']), reverse=True)
+    return [video for video in video_details if
             datetime.strptime(video['snippet']['publishedAt'], "%Y-%m-%dT%H:%M:%SZ") > from_date]
 
 videos = get_channel_videos(channel_id, from_date)
 for video in videos:
-    video_id = video['snippet']['resourceId']['videoId']
+    video_id = video['id']
     print('Fetching subtitles for ', video_id)
     try:
         srt = YouTubeTranscriptApi().get_transcript(video_id, languages=['ja'])
