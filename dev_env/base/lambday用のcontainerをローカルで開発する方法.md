@@ -30,8 +30,10 @@ docker buildをして、そのイメージがそのままlambdaに使える。
 4. localstack start -d --network lsでlocalstackを起動
 5. docker inspect localstack-main でlocalstackのIPアドレスを確認。(https://docs.localstack.cloud/references/network-troubleshooting/endpoint-url/)
 6. 開発するをコンテナを
-   docker run --rm -it --dns (4で確認したIPアドレス) --network ls `<arguments>` `<image name>`
+   docker run --rm -it --dns (4で確認したIPアドレス) --network ls --platform
+   linux/amd64 -p 9000:8080 `<image name>`
    で起動する。
 7. docker exec -it (containerID) /bin/bashでコンテナに接続
 8. localstackで起動したAWS環境に接続する場合は、aws --profile localstack (awsのコマンド) --endpoint-url=http://(4で確認したIP):4566 で接続する
+9. boto3を使う場合にはos.environ['AWS_ENDPOINT_URL'] ="http://(4で確認したIP):4566"をスクリプトに追加する
    👆準備したDockerfileをベースにビルドすること

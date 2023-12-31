@@ -1,3 +1,6 @@
 venv
 .env
-dev_env
+dev_env/base/localstack_credential.sh
+dev_env/linebot-pipeline/localstack_credential.sh
+dev_env/linebot-pipeline/.aws/*
+dev_env/linebot-pipeline/.env

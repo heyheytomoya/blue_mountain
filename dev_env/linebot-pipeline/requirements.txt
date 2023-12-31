@@ -1,0 +1,6 @@
+langchain==0.0.352
+openai
+sentence_transformers
+faiss-cpu
+line-bot-sdk
+python-dotenv
