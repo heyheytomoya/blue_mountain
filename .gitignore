@@ -1,6 +1,6 @@
 venv
 .env
 dev_env/base/localstack_credential.sh
-dev_env/linebot-pipeline/localstack_credential.sh
-dev_env/linebot-pipeline/.aws/*
-dev_env/linebot-pipeline/.env
+linebot-pipeline/localstack_credential.sh
+linebot-pipeline/.aws/*
+linebot-pipeline/.env

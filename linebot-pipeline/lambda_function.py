@@ -15,15 +15,14 @@ from langchain.globals import set_verbose
 from langchain.callbacks.manager import CallbackManagerForRetrieverRun
 import uuid
 from langchain.callbacks.base import BaseCallbackHandler
-from langchain.vectorstores.faiss import FAISS
-from langchain.retrievers import TFIDFRetriever
-from langchain.embeddings import HuggingFaceBgeEmbeddings
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 import time
 import pickle
 from dotenv import load_dotenv
 import os
+import gc
+
 TEMP_FOLDER = '/tmp'
 DOWNLOAD_PATH = '/tmp/'
 BUCKET_NAME = 'linebot-data'
@@ -71,14 +70,21 @@ def downloadS3() :
         end = time.time()
         print("Download pickle comlete!")
         print(f"Download time {end-start}")
+        #メモリ解放
+        del s3_client
+        del s3_object_key
+        del start
+        del end
+        gc.collect()
+        
     # promptのデータ
     # コールドホット判別用にファイルの有無確認
     if os.path.isfile(os.path.join(TEMP_FOLDER, PROMPT_FILE_NAME)):
         print("template already exist. pass download...")
     else:
         print("Download template session.")
-        session = boto3.session.Session(profile_name='bluemountain')
-        s3_client = session.client('s3')
+        # session = boto3.session.Session(profile_name='bluemountain')
+        s3_client = boto3.client('s3')
         s3_object_key = os.path.join('prompt', LINEBOT_NAME, PROMPT_FILE_NAME)
         print("Start download template.")
         start = time.time()
@@ -86,6 +92,12 @@ def downloadS3() :
         end = time.time()
         print("Download prompt comlete!")
         print(f"Download time {end-start}")
+        #メモリ解放
+        del s3_client
+        del s3_object_key
+        del start
+        del end
+        gc.collect()
         
 def LCEL(memory, question_prompt, llm, retriever, answer_prompt):
     
@@ -146,7 +158,7 @@ def read_pickle(query : str) -> str:
         print(template)
     
     faiss_retriever = faiss_retriver.as_retriever(search_kwargs={"k": 4})
-    run_manager = CallbackManagerForRetrieverRun(run_id=uuid.uuid4, handlers=[BaseCallbackHandler()], inheritable_handlers=[BaseCallbackHandler()])
+    # run_manager = CallbackManagerForRetrieverRun(run_id=uuid.uuid4, handlers=[BaseCallbackHandler()], inheritable_handlers=[BaseCallbackHandler()])
     
     #会話履歴用のPromptTemplate
     _template = """
