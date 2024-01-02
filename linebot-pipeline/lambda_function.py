@@ -145,7 +145,7 @@ def LCEL(memory, question_prompt, llm, retriever, answer_prompt):
     return final_chain
         
 # pickleを読み込んで
-def read_pickle(query : str) -> str:
+def linebot_response(query : str) -> str:
     print("Read pickle function.")
     start = time.time()
     with open(os.path.join(DOWNLOAD_PATH, PICKLE_FILE_NAME), 'rb') as f:

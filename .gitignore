@@ -4,3 +4,5 @@ dev_env/base/localstack_credential.sh
 linebot-pipeline/localstack_credential.sh
 linebot-pipeline/.aws/*
 linebot-pipeline/.env
+youtuber_scraping/raw_data/*
+youtuber_scraping/vector_store/*
